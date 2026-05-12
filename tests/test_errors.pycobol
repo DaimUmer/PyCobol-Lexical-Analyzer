@@ -1,0 +1,32 @@
+* PyCOBOL Error Test File — Tests Lexical Error Detection
+* This file intentionally contains lexical errors
+
+IDENTIFICATION DIVISION
+PROGRAM-ID: ErrorTest
+AUTHOR: CS Student
+
+DATA DIVISION
+WORKING-STORAGE SECTION
+    01 employee_name    PIC A(30)
+    01 salary           PIC 9(7)V99
+    01 bad_pic          PIC Z(5)
+    01 department       PIC A(20)
+
+PROCEDURE DIVISION
+
+# Test 1: Unclosed string literal
+employee_name = "Ahmed Khan
+salary = 75000
+
+# Test 2: Unknown/invalid characters
+total = salary + bonus @ tax
+price = 100 $ 50
+
+# Test 3: Another unclosed string
+DISPLAY "Hello World
+
+# Test 4: Valid code to show recovery works
+COMPUTE bonus = salary * 0.15
+DISPLAY "This is fine"
+
+STOP RUN

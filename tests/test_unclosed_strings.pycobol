@@ -1,0 +1,32 @@
+* PyCOBOL Test Case 2: UNCLOSED STRING LITERALS
+* Tests lexer's ability to detect missing closing quotes
+
+IDENTIFICATION DIVISION
+PROGRAM-ID: StringErrors
+
+DATA DIVISION
+WORKING-STORAGE SECTION
+    01 name     PIC A(20)
+    01 city     PIC A(15)
+
+PROCEDURE DIVISION
+
+# Python-style logic with unclosed strings
+def process_data():
+    if True:
+        # Error 1: Unclosed double-quote string
+        name = "Ahmed Khan
+    
+    for i in range(5):
+        # Error 2: Unclosed single-quote string
+        city = 'Islamabad
+        
+        # Valid string (should NOT be flagged)
+        DISPLAY "This string is properly closed"
+
+# Error 3: Unclosed string inside DISPLAY
+while False:
+    DISPLAY "Welcome to PyCOBOL
+
+# Error 4: Another unclosed string at end of file
+name = "Final test

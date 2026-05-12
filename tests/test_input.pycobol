@@ -1,0 +1,56 @@
+* PyCOBOL Sample Program — Payroll Processing System
+* Demonstrates hybrid COBOL + Python syntax
+
+IDENTIFICATION DIVISION
+PROGRAM-ID: PayrollSystem
+AUTHOR: CS Student
+
+DATA DIVISION
+WORKING-STORAGE SECTION
+    01 employee_name    PIC A(30)
+    01 salary           PIC 9(7)V99
+    01 tax_rate         PIC 9V99
+    01 bonus            PIC 9(5)V99
+    01 department       PIC A(20)
+
+PROCEDURE DIVISION
+
+# Initialize values using Python-style assignment
+employee_name = "Ahmed Khan"
+salary = 75000
+tax_rate = 0.10
+department = "Engineering"
+
+# COBOL-style computation
+COMPUTE bonus = salary * 0.15
+COMPUTE tax = salary * tax_rate
+
+# Python-style control flow
+if salary > 50000:
+    DISPLAY "Employee is in high salary bracket"
+    COMPUTE net_pay = salary + bonus - tax
+else:
+    COMPUTE net_pay = salary - tax
+
+# Python loop with COBOL display
+for month in range(12):
+    DISPLAY "Processing month: " month
+
+# Nested logic — both languages together
+if department == "Engineering":
+    if bonus > 10000:
+        DISPLAY "High bonus approved for " employee_name
+        MOVE bonus TO approved_bonus
+    else:
+        DISPLAY "Standard bonus applied"
+elif department == "HR":
+    COMPUTE bonus = salary * 0.10
+
+# COBOL-style output
+DISPLAY "Employee   : " employee_name
+DISPLAY "Salary     : " salary
+DISPLAY "Tax        : " tax
+DISPLAY "Bonus      : " bonus
+DISPLAY "Net Pay    : " net_pay
+
+STOP RUN

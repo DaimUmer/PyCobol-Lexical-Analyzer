@@ -1,0 +1,47 @@
+* PyCOBOL Test Case 1: CLEAN CODE (No Errors)
+* Demonstrates all valid token types recognized by the lexer
+
+IDENTIFICATION DIVISION
+PROGRAM-ID: StudentGrading
+AUTHOR: CS Student
+DATE-WRITTEN: 2026-05-04
+
+DATA DIVISION
+WORKING-STORAGE SECTION
+    01 student_name     PIC A(30)
+    01 marks            PIC 9(3)
+    01 percentage       PIC 9(3)V99
+    01 grade            PIC A(2)
+
+PROCEDURE DIVISION
+
+# Initialize student data
+student_name = "Ali Ahmed"
+marks = 450
+percentage = 90.50
+
+# COBOL-style computation
+COMPUTE percentage = marks / 500 * 100
+
+# Python-style control flow with COBOL operations
+if percentage >= 90:
+    grade = "A+"
+    DISPLAY "Excellent performance!"
+elif percentage >= 80:
+    grade = "A"
+    DISPLAY "Good job!"
+elif percentage >= 70:
+    grade = "B"
+else:
+    grade = "C"
+
+# Loop through subjects
+for i in range(5):
+    DISPLAY "Subject " i " processed"
+
+# Final output
+DISPLAY "Student : " student_name
+DISPLAY "Marks   : " marks
+DISPLAY "Grade   : " grade
+
+STOP RUN

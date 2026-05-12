@@ -1,0 +1,40 @@
+* PyCOBOL Test Case 3: UNKNOWN / INVALID CHARACTERS
+* Tests lexer's ability to detect characters not in any token pattern
+
+IDENTIFICATION DIVISION
+PROGRAM-ID: CharErrors
+
+DATA DIVISION
+WORKING-STORAGE SECTION
+    01 total    PIC 9(5)V99
+    01 price    PIC 9(5)V99
+
+PROCEDURE DIVISION
+
+def calculate_taxes():
+    for item in range(10):
+        # Error 1: @ symbol (not valid in PyCOBOL)
+        total = price @ tax
+        
+        # Error 2: $ symbol
+        price = 100 $ 50
+        
+        if True:
+            # Error 3: & symbol
+            result = a & b
+
+while total > 0:
+    # Error 4: ~ tilde
+    value = ~100
+    
+    # Error 5: Backtick
+    name = `hello`
+
+# Valid operators (should NOT be flagged)
+total = price + tax
+result = a - b
+COMPUTE net = gross * rate
+if x >= 10:
+    DISPLAY "Valid"
+
+STOP RUN

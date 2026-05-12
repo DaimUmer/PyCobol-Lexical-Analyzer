@@ -1,0 +1,81 @@
+* PyCOBOL Test Case 5: ALL TOKEN TYPES DEMONSTRATION
+* Showcases every token category the lexer can recognize
+
+IDENTIFICATION DIVISION
+PROGRAM-ID: TokenShowcase
+AUTHOR: CS Student
+DATE-WRITTEN: 2026-05-04
+
+ENVIRONMENT DIVISION
+
+DATA DIVISION
+WORKING-STORAGE SECTION
+    01 full_name      PIC A(30)
+    01 employee_id    PIC 9(5)
+    01 salary         PIC 9(7)V99
+    01 tax            PIC 9(5)V99
+    01 bonus          PIC 9(5)V99
+    05 department     PIC A(20)
+
+PROCEDURE DIVISION
+
+* COBOL comment style
+# Python comment style
+
+# --- String Literals ---
+full_name = "Muhammad Ali"
+department = "Computer Science"
+
+# --- Integer and Float ---
+employee_id = 12345
+salary = 85000
+tax = 0.15
+
+# --- All Operators ---
+COMPUTE bonus = salary * 0.10
+COMPUTE tax = salary - bonus
+total = salary + bonus
+result = 100 / 5
+if salary == 85000:
+    DISPLAY "Match"
+if salary != 0:
+    DISPLAY "Non-zero"
+if salary > 50000:
+    DISPLAY "High"
+if tax <= 15000:
+    DISPLAY "Low tax"
+if bonus >= 5000:
+    DISPLAY "Good bonus"
+if employee_id < 99999:
+    DISPLAY "Valid ID"
+
+# --- COBOL Keywords ---
+MOVE salary TO old_salary
+ADD bonus TO salary
+SUBTRACT tax FROM salary
+DISPLAY "Final salary: " salary
+PERFORM calculation
+ACCEPT user_input
+
+# --- Python Keywords ---
+for i in range(10):
+    if i > 5:
+        print(i)
+    else:
+        pass
+
+while True:
+    break
+
+def calculate():
+    return None
+
+# --- EVALUATE (COBOL switch-case) ---
+EVALUATE department
+    WHEN "Engineering"
+        COMPUTE bonus = salary * 0.20
+    WHEN "HR"
+        COMPUTE bonus = salary * 0.10
+END-EVALUATE
+
+STOP RUN

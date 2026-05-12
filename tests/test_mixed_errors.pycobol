@@ -1,0 +1,47 @@
+* PyCOBOL Test Case 4: MIXED ERRORS (All Error Types Combined)
+* Tests error recovery -- lexer should find ALL errors, not stop at first
+
+IDENTIFICATION DIVISION
+PROGRAM-ID: MixedErrors
+AUTHOR: CS Student
+
+DATA DIVISION
+WORKING-STORAGE SECTION
+    01 emp_name     PIC A(25)
+    01 salary       PIC 9(6)V99
+    01 bonus        PIC 9(4)V99
+
+PROCEDURE DIVISION
+
+# Mix of errors and valid code throughout
+def process_payroll():
+    # Error 1: Unclosed string
+    emp_name = "Khan
+    
+    # Valid computation (no error)
+    COMPUTE salary = 50000
+    
+    for month in range(12):
+        # Error 2: Unknown character @
+        bonus = salary @ 0.15
+        
+        # Error 3: Another unclosed string
+        DISPLAY "Processing payroll
+        
+        # Valid code between errors (tests recovery)
+        if salary > 30000:
+            DISPLAY "High bracket"
+        elif salary < 10000:
+            pass
+            
+        # Error 4: Unknown character $
+        total = 100 $ 200
+
+# Error 5: Unclosed string right before valid code
+while True:
+    msg = "Hello
+    break
+
+# Valid end of program
+DISPLAY "Program complete"
+STOP RUN

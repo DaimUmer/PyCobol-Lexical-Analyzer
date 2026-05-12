@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PyCOBOL Lexical Analyzer</title>
+    <meta name="description" content="Interactive lexical analyzer for PyCOBOL hybrid programming language">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">
+                <span class="logo-icon">&lt;/&gt;</span>
+                <div>
+                    <h1>PyCOBOL Lexical Analyzer</h1>
+                    <p class="subtitle">Theory of Programming Language (CT-367)</p>
+                </div>
+            </div>
+        </div>
+        <div class="header-right">
+            <select id="testFileSelect" class="file-select">
+                <option value="">-- Load Test File --</option>
+                {% for f in test_files %}
+                <option value="{{ f }}">{{ f }}</option>
+                {% endfor %}
+            </select>
+            <button id="analyzeBtn" class="btn btn-primary" onclick="analyzeCode()">
+                <span class="btn-icon">&#9654;</span> Analyze
+            </button>
+            <button class="btn btn-secondary" onclick="clearAll()">Clear</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+
+        <!-- Left Panel: Source Code Editor -->
+        <div class="panel editor-panel">
+            <div class="panel-header">
+                <h2>Source Code</h2>
+                <span id="lineCount" class="badge">0 lines</span>
+            </div>
+            <div class="editor-wrapper">
+                <div class="line-numbers" id="lineNumbers"></div>
+                <textarea id="sourceCode" class="code-editor" placeholder="Paste your PyCOBOL source code here..." spellcheck="false"></textarea>
+            </div>
+        </div>
+
+        <!-- Right Panel: Results -->
+        <div class="panel results-panel">
+
+            <!-- Tab Navigation -->
+            <div class="tab-bar">
+                <button class="tab active" data-tab="dashboard" onclick="switchTab('dashboard')">
+                    <span class="tab-icon">&#9632;</span> Dashboard
+                </button>
+                <button class="tab" data-tab="tokens" onclick="switchTab('tokens')">
+                    <span class="tab-icon">&#8801;</span> Tokens
+                </button>
+                <button class="tab" data-tab="symbols" onclick="switchTab('symbols')">
+                    <span class="tab-icon">&#9670;</span> Symbols
+                </button>
+                <button class="tab" data-tab="errors" onclick="switchTab('errors')">
+                    <span class="tab-icon">&#9888;</span> Errors
+                    <span id="errorBadge" class="error-badge hidden">0</span>
+                </button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="tab-dashboard" class="tab-content active">
+                <div id="welcomeState" class="welcome-state">
+                    <div class="welcome-icon">&#128269;</div>
+                    <h3>Ready to Analyze</h3>
+                    <p>Paste your PyCOBOL source code or load a test file, then click <strong>Analyze</strong></p>
+                </div>
+                <div id="dashboardContent" class="hidden">
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="statLines">0</div>
+                            <div class="stat-label">Lines</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="statTokens">0</div>
+                            <div class="stat-label">Tokens</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="statSymbols">0</div>
+                            <div class="stat-label">Symbols</div>
+                        </div>
+                        <div class="stat-card stat-card-errors" id="statErrorCard">
+                            <div class="stat-value" id="statErrors">0</div>
+                            <div class="stat-label">Errors</div>
+                        </div>
+                    </div>
+
+                    <!-- Hybrid Score -->
+                    <div class="hybrid-section">
+                        <h3>Hybrid Language Score</h3>
+                        <div class="hybrid-bar-container">
+                            <div class="hybrid-bar">
+                                <div class="hybrid-cobol" id="hybridCobol" style="width: 0%"></div>
+                                <div class="hybrid-python" id="hybridPython" style="width: 0%"></div>
+                            </div>
+                            <div class="hybrid-labels">
+                                <span class="hybrid-label cobol-label">
+                                    <span class="dot dot-cobol"></span>
+                                    COBOL <strong id="cobolPct">0%</strong>
+                                </span>
+                                <span class="hybrid-label python-label">
+                                    <span class="dot dot-python"></span>
+                                    Python <strong id="pythonPct">0%</strong>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Token Distribution -->
+                    <div class="distribution-section">
+                        <h3>Token Distribution</h3>
+                        <div id="tokenDistribution" class="distribution-bars"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tokens Tab -->
+            <div id="tab-tokens" class="tab-content">
+                <div class="table-toolbar">
+                    <input type="text" id="tokenSearch" class="search-input" placeholder="Search tokens..." oninput="filterTokens()">
+                    <select id="tokenFilter" class="filter-select" onchange="filterTokens()">
+                        <option value="">All Types</option>
+                    </select>
+                    <span id="tokenCount" class="badge">0 tokens</span>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="tokenTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Token Type</th>
+                                <th>Value</th>
+                                <th>Line</th>
+                                <th>Col</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tokenTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Symbols Tab -->
+            <div id="tab-symbols" class="tab-content">
+                <div class="table-toolbar">
+                    <span id="symbolCount" class="badge">0 symbols</span>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="symbolTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Data Type</th>
+                                <th>Value</th>
+                                <th>Scope</th>
+                                <th>Line</th>
+                            </tr>
+                        </thead>
+                        <tbody id="symbolTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Errors Tab -->
+            <div id="tab-errors" class="tab-content">
+                <div id="noErrors" class="success-state">
+                    <div class="success-icon">&#10003;</div>
+                    <h3>No Lexical Errors</h3>
+                    <p>Source code is lexically clean!</p>
+                </div>
+                <div id="errorList" class="error-list hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="spinner"></div>
+        <p>Analyzing source code...</p>
+    </div>
+
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
