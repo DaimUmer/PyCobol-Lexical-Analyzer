@@ -180,7 +180,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 20px;
+    padding: 0 20px;
+    min-height: 44px;
     background: var(--bg-secondary);
     border-bottom: 1px solid var(--border);
 }
@@ -208,7 +209,7 @@ body {
 .editor-wrapper {
     display: flex;
     flex: 1;
-    overflow: auto;
+    overflow: hidden;
     background: var(--bg-primary);
 }
 
@@ -223,6 +224,7 @@ body {
     min-width: 48px;
     background: var(--bg-secondary);
     border-right: 1px solid var(--border);
+    overflow-y: hidden;
 }
 
 .code-editor {
@@ -236,7 +238,9 @@ body {
     outline: none;
     resize: none;
     width: 100%;
-    min-height: 100%;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
     tab-size: 4;
 }
 
@@ -249,17 +253,19 @@ body {
 
 .tab-bar {
     display: flex;
+    align-items: stretch;
     gap: 0;
     background: var(--bg-secondary);
     border-bottom: 1px solid var(--border);
     padding: 0 12px;
+    min-height: 44px;
 }
 
 .tab {
     font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 500;
-    padding: 12px 18px;
+    padding: 0 18px;
     background: none;
     border: none;
     border-bottom: 2px solid transparent;
