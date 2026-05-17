@@ -1,21 +1,10 @@
-"""
-PyCOBOL Lexical Analyzer
-========================
-A lexical analyzer for PyCOBOL — a hybrid programming language that combines
-COBOL's business-oriented data processing structure with Python's modern
-general-purpose control flow syntax.
 
-Course  : Theory of Programming Language (CT-367)
-Language: PyCOBOL (Hybrid: COBOL + Python)
-"""
 
 import re
 import sys
 
 
-# ─────────────────────────────────────────────
-#  TOKEN DEFINITIONS
-# ─────────────────────────────────────────────
+# Token Definition
 
 COBOL_DIVISIONS = [
     "IDENTIFICATION DIVISION",
@@ -29,6 +18,7 @@ COBOL_SECTIONS = [
     "FILE SECTION",
     "LINKAGE SECTION",
     "INPUT-OUTPUT SECTION",
+    "CONFIGURATION SECTION",
 ]
 
 COBOL_KEYWORDS = [
@@ -41,8 +31,11 @@ COBOL_KEYWORDS = [
     "IF", "ELSE", "END-IF", "THEN",
     "OPEN", "CLOSE", "READ", "WRITE",
     "PIC", "VALUE", "FILLER",
-    "01", "02", "03", "04", "05",
-    "ACCEPT", "UNSTRING",
+    "01", "02", "03", "04", "05", "77", "88",
+    "ACCEPT", "UNSTRING", "REDEFINES", "COPYBOOKS", "ABBEND",
+    "FD", "SELECT", "ASSIGN", "ORGANIZATION", "SEQUENTIAL",
+    "EXTEND", "OUTPUT", "INPUT",
+    "UPON", "AT", "END", "TRIM", "WITH", "ADVANCING",
 ]
 
 PYTHON_KEYWORDS = [
@@ -156,7 +149,13 @@ def tokenize(source_code):
     multi_word = (
         [(d, "COBOL_DIVISION") for d in COBOL_DIVISIONS] +
         [(s, "COBOL_SECTION")  for s in COBOL_SECTIONS]  +
-        [("STOP RUN",          "COBOL_KEYWORD")]
+        [("STOP RUN",           "COBOL_KEYWORD"),
+        ("GO TO",              "COBOL_KEYWORD"),
+        ("AT END",             "COBOL_KEYWORD"),
+        ("WITH NO ADVANCING",  "COBOL_KEYWORD"),
+        ("FILE-CONTROL",       "COBOL_KEYWORD"),
+        ("SPECIAL-NAMES",      "COBOL_KEYWORD"),
+        ("FILE STATUS",        "COBOL_KEYWORD")]
     )
 
     for phrase, ttype in sorted(multi_word, key=lambda x: -len(x[0])):
